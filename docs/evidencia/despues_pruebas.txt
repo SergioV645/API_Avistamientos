@@ -1,0 +1,35 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.18, pytest-9.1.1, pluggy-1.6.0
+rootdir: API_Avistamientos
+configfile: pytest.ini
+testpaths: tests
+plugins: platformdirs-4.13.5, anyio-4.15.1, cov-7.1.0
+collected 55 items
+tests/test_api.py ..................                                     [ 32%]
+tests/test_arquitectura.py ......                                        [ 43%]
+tests/test_casos_de_uso.py .......                                       [ 56%]
+tests/test_validador.py ........................                         [100%]
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.13.18-final-0 _______________
+Name                                                      Stmts   Miss Branch BrPart  Cover   Missing
+-----------------------------------------------------------------------------------------------------
+app.py                                                        4      1      2      1    67%   8
+avistamientos/__init__.py                                     0      0      0      0   100%
+avistamientos/adaptadores/__init__.py                         0      0      0      0   100%
+avistamientos/adaptadores/controlador_http.py                51      0      0      0   100%
+avistamientos/adaptadores/repositorio_sqlite.py              39      0      0      0   100%
+avistamientos/casos_de_uso/__init__.py                        0      0      0      0   100%
+avistamientos/casos_de_uso/avistamientos.py                  49      0     10      0   100%
+avistamientos/casos_de_uso/errores.py                         8      0      0      0   100%
+avistamientos/casos_de_uso/repositorio.py                    14      0      0      0   100%
+avistamientos/entidades/__init__.py                           0      0      0      0   100%
+avistamientos/entidades/reloj.py                              4      0      0      0   100%
+avistamientos/entidades/validador.py                         41      0     14      0   100%
+avistamientos/frameworks_y_drivers/__init__.py                0      0      0      0   100%
+avistamientos/frameworks_y_drivers/reloj_del_sistema.py       5      0      0      0   100%
+avistamientos/frameworks_y_drivers/sqlite.py                  5      0      0      0   100%
+avistamientos/frameworks_y_drivers/web_flask.py              34      2      2      0    94%   43, 47
+avistamientos/main.py                                        12      0      0      0   100%
+-----------------------------------------------------------------------------------------------------
+TOTAL                                                       266      3     28      1    99%
+============================== 55 passed in 0.32s ==============================

@@ -1,6 +1,6 @@
 # API de avistamientos de aves
 
-API REST para registrar avistamientos de aves. Ingeniería de Software 2 (ISW-2): construida en la Sesión 17 y probada en la Sesión 22.
+API REST para registrar avistamientos de aves. Ingeniería de Software 2 (ISW-2): construida en la Sesión 17, probada en la Sesión 22 y reorganizada con **Clean Architecture** en el Taller 5.
 
 - **Lenguaje:** Python 3.10+
 - **Framework:** Flask 3
@@ -39,12 +39,13 @@ Con el entorno virtual activado:
 | Qué | Comando |
 |---|---|
 | Correr todas las pruebas | `python -m pytest` |
-| Solo las unitarias (validador) | `python -m pytest tests/test_validador.py` |
+| Solo las unitarias (entidad y casos de uso) | `python -m pytest tests/test_validador.py tests/test_casos_de_uso.py` |
 | Solo las de integración (API por HTTP) | `python -m pytest tests/test_api.py` |
+| Verificar la regla de dependencia | `python -m pytest tests/test_arquitectura.py` |
 | Generar la cobertura (en consola) | `python -m pytest --cov --cov-report=term-missing` |
 | Generar la cobertura (en HTML, en `htmlcov/index.html`) | `python -m pytest --cov --cov-report=html` |
 
-La justificación de las pruebas está en [`docs/justificacion-pruebas.md`](docs/justificacion-pruebas.md).
+La justificación de las pruebas está en [`docs/justificacion-pruebas.md`](docs/justificacion-pruebas.md) y el documento del Taller 5 (arquitectura) en [`docs/taller5-clean-architecture.md`](docs/taller5-clean-architecture.md).
 
 ## Modelo: avistamiento
 
@@ -64,7 +65,7 @@ Un avistamiento es válido si:
 - la **fecha** tiene el formato `AAAA-MM-DD`, es una fecha real y **no es posterior a hoy**
 - el **lugar** y el **observador** no están vacíos.
 
-Si no es válido, `POST` y `PUT` responden `400` indicando qué campo falló. La regla vive en `validador.py` (`ValidadorDeAvistamiento`), separada de las rutas.
+Si no es válido, `POST` y `PUT` responden `400` indicando qué campo falló. La regla vive en la capa de entidades (`avistamientos/entidades/validador.py`), separada de las rutas.
 
 **No se permiten avistamientos repetidos:** si ya existe uno con la misma especie, lugar, fecha y observador (sin importar mayúsculas), la API responde `409 Conflict`. Lo garantiza un índice `UNIQUE` en la base de datos.
 
@@ -175,20 +176,24 @@ Respuesta `200 OK`:
 {"total": 3, "porEspecie": [{"especie": "Colibrí", "cantidad": 2}, {"especie": "Tucán", "cantidad": 1}]}
 ```
 
-## Estructura del proyecto
+## Arquitectura
+
+El código sigue **Clean Architecture** (Martin, 2012): las reglas de negocio están en el centro y Flask y SQLite en el borde. Los `import` solo apuntan hacia adentro, y `tests/test_arquitectura.py` lo verifica.
 
 ```
-app.py                    Rutas (controlador) y códigos de estado
-validador.py              Regla de negocio: ValidadorDeAvistamiento y RelojDelSistema
-db.py                     Conexión a SQLite, creación de la tabla y consultas SQL
-tests/test_validador.py   Pruebas unitarias del validador
-tests/test_api.py         Pruebas de integración de la API por HTTP
-tests/dobles.py           Dobles de prueba (RelojFijo, un stub del reloj)
-tests/conftest.py         Fixture: API con base de datos en memoria nueva por prueba
-docs/justificacion-pruebas.md   Justificación de las pruebas (Sesión 22)
-requirements.txt          Dependencias (Flask, pytest, pytest-cov)
-setup.cfg                 Configuración de la cobertura (incluye ramas)
+app.py                              Punto de entrada (`python app.py`)
+avistamientos/
+  entidades/                        Regla de negocio: ValidadorDeAvistamiento, «interfaz» Reloj
+  casos_de_uso/                     Registrar, Listar, Consultar, Actualizar, Eliminar, Resumir
+                                    + «puerto» RepositorioDeAvistamientos y errores
+  adaptadores/                      ControladorDeAvistamientos (HTTP) y RepositorioSqlite (SQL)
+  frameworks_y_drivers/             Flask, conexión SQLite y RelojDelSistema
+  main.py                           Raíz de composición: une todas las capas
+tests/                              Pruebas (validador, casos de uso, API, arquitectura)
+docs/                               Documentos de los talleres, diagrama y evidencia
 ```
+
+![Diagrama de dependencias](docs/diagrama-dependencias.svg)
 
 ## Uso de IA
 

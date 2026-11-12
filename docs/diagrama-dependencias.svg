@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 700" width="1120" height="700" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="flecha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1f2937"/>
+    </marker>
+  </defs>
+  <rect width="1120" height="700" fill="#ffffff"/>
+  <!-- Círculos de Clean Architecture (Martin, 2012) -->
+  <circle cx="350" cy="350" r="335" fill="#dbeafe" stroke="#1e3a8a" stroke-width="1.5"/>
+  <circle cx="350" cy="350" r="255" fill="#dcfce7" stroke="#14532d" stroke-width="1.5"/>
+  <circle cx="350" cy="350" r="170" fill="#fef3c7" stroke="#78350f" stroke-width="1.5"/>
+  <circle cx="350" cy="350" r="85" fill="#fde68a" stroke="#78350f" stroke-width="1.5"/>
+
+  <!-- Frameworks y drivers -->
+  <text x="350" y="40" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e3a8a">FRAMEWORKS Y DRIVERS</text>
+  <text x="350" y="62" text-anchor="middle" font-size="12" fill="#111827">Flask (web_flask.py)   ·   main.py</text>
+  <text x="350" y="648" text-anchor="middle" font-size="12" fill="#111827">SQLite (sqlite.py)</text>
+  <text x="645" y="344" text-anchor="middle" font-size="11" fill="#111827">Reloj del</text>
+  <text x="645" y="358" text-anchor="middle" font-size="11" fill="#111827">sistema</text>
+
+  <!-- Adaptadores de interfaz -->
+  <text x="350" y="118" text-anchor="middle" font-size="13" font-weight="bold" fill="#14532d">ADAPTADORES DE INTERFAZ</text>
+  <text x="350" y="145" text-anchor="middle" font-size="12" fill="#111827">ControladorDeAvistamientos (HTTP)</text>
+  <text x="350" y="570" text-anchor="middle" font-size="12" fill="#111827">RepositorioSqliteDeAvistamientos (SQL)</text>
+
+  <!-- Casos de uso -->
+  <text x="350" y="200" text-anchor="middle" font-size="13" font-weight="bold" fill="#78350f">CASOS DE USO</text>
+  <text x="350" y="222" text-anchor="middle" font-size="12" fill="#111827">Registrar · Listar · Consultar</text>
+  <text x="350" y="240" text-anchor="middle" font-size="12" fill="#111827">Actualizar · Eliminar · Resumir</text>
+  <text x="350" y="462" text-anchor="middle" font-size="11" fill="#111827">«puerto»</text>
+  <text x="350" y="478" text-anchor="middle" font-size="12" fill="#111827">RepositorioDeAvistamientos</text>
+  <text x="350" y="497" text-anchor="middle" font-size="11" fill="#111827">errores</text>
+
+  <!-- Entidades -->
+  <text x="350" y="322" text-anchor="middle" font-size="13" font-weight="bold" fill="#78350f">ENTIDADES</text>
+  <text x="350" y="346" text-anchor="middle" font-size="11" fill="#111827">ValidadorDeAvistamiento</text>
+  <text x="350" y="366" text-anchor="middle" font-size="11" fill="#111827">«interfaz» Reloj</text>
+
+  <!-- Dependencias de código: todas hacia adentro -->
+  <line x1="350" y1="70" x2="350" y2="102" stroke="#1f2937" stroke-width="2" marker-end="url(#flecha)"/>
+  <line x1="350" y1="152" x2="350" y2="184" stroke="#1f2937" stroke-width="2" marker-end="url(#flecha)"/>
+  <line x1="350" y1="248" x2="350" y2="304" stroke="#1f2937" stroke-width="2" marker-end="url(#flecha)"/>
+  <line x1="350" y1="556" x2="350" y2="508" stroke="#1f2937" stroke-width="2" marker-end="url(#flecha)"/>
+  <text x="358" y="536" font-size="10" fill="#374151">implementa</text>
+  <line x1="350" y1="578" x2="350" y2="632" stroke="#6b7280" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#flecha)"/>
+  <text x="358" y="610" font-size="10" fill="#374151">usa la librería sqlite3</text>
+  <line x1="606" y1="351" x2="440" y2="358" stroke="#1f2937" stroke-width="2" marker-end="url(#flecha)"/>
+  <text x="500" y="345" font-size="10" fill="#374151">implementa</text>
+
+  <!-- Leyenda -->
+  <text x="720" y="70" font-size="16" font-weight="bold" fill="#111827">Dirección de las dependencias</text>
+  <line x1="720" y1="100" x2="770" y2="100" stroke="#1f2937" stroke-width="2" marker-end="url(#flecha)"/>
+  <text x="780" y="104" font-size="12" fill="#111827">import en el código (dependencia de código)</text>
+  <text x="720" y="128" font-size="12" fill="#111827">Entre las capas del proyecto, todas apuntan hacia</text>
+  <text x="720" y="145" font-size="12" fill="#111827">el centro: regla de dependencia (Martin, 2012).</text>
+
+  <line x1="720" y1="178" x2="770" y2="178" stroke="#6b7280" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#flecha)"/>
+  <text x="780" y="182" font-size="12" fill="#111827">el adaptador usa la librería del motor: todo</text>
+  <text x="780" y="198" font-size="12" fill="#111827">el SQL va en esta capa (Martin, 2017, cap. 22).</text>
+  <text x="780" y="214" font-size="12" fill="#111827">La conexión la abre sqlite.py y la pasa main.py.</text>
+
+  <text x="720" y="240" font-size="13" font-weight="bold" fill="#111827">main.py (raíz de composición)</text>
+  <text x="720" y="258" font-size="12" fill="#111827">Importa todas las capas para armarlas.</text>
+  <text x="720" y="274" font-size="12" fill="#111827">Ninguna capa lo importa a él (Martin, 2017, cap. 26).</text>
+
+  <text x="720" y="318" font-size="13" font-weight="bold" fill="#111827">Inversión de dependencias</text>
+  <text x="720" y="336" font-size="12" fill="#111827">En un POST el control va hacia afuera:</text>
+  <text x="720" y="352" font-size="12" fill="#111827">Flask → Controlador → RegistrarAvistamiento</text>
+  <text x="720" y="368" font-size="12" fill="#111827">→ «puerto» → RepositorioSqlite → SQLite.</text>
+  <text x="720" y="386" font-size="12" fill="#111827">Pero el código del repositorio SQLite apunta</text>
+  <text x="720" y="402" font-size="12" fill="#111827">hacia adentro: implementa el puerto que</text>
+  <text x="720" y="418" font-size="12" fill="#111827">declaran los casos de uso. Igual con Reloj.</text>
+
+  <text x="720" y="462" font-size="13" font-weight="bold" fill="#111827">Lo que NO aparece en el centro</text>
+  <text x="720" y="480" font-size="12" fill="#111827">Las entidades y los casos de uso no importan</text>
+  <text x="720" y="496" font-size="12" fill="#111827">flask ni sqlite3. tests/test_arquitectura.py</text>
+  <text x="720" y="512" font-size="12" fill="#111827">lo verifica en cada corrida de pytest.</text>
+</svg>

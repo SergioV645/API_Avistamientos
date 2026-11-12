@@ -1,0 +1,19 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.18, pytest-9.1.1, pluggy-1.6.0
+rootdir: API_Avistamientos
+configfile: pytest.ini
+testpaths: tests
+plugins: platformdirs-4.13.5, anyio-4.15.1, cov-7.1.0
+collected 42 items
+tests/test_api.py ..................                                     [ 42%]
+tests/test_validador.py ........................                         [100%]
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.13.18-final-0 _______________
+Name           Stmts   Miss Branch BrPart  Cover   Missing
+----------------------------------------------------------
+app.py            68      3     12      1    95%   79, 83, 89
+db.py             31      0      0      0   100%
+validador.py      43      0     14      0   100%
+----------------------------------------------------------
+TOTAL            142      3     26      1    98%
+============================== 42 passed in 0.28s ==============================
