@@ -3,7 +3,8 @@ import sqlite3
 from flask import Flask, jsonify, request
 
 import db
-from validador import RelojDelSistema, ValidadorDeAvistamiento
+from avistamientos.entidades.validador import ValidadorDeAvistamiento
+from avistamientos.frameworks_y_drivers.reloj_del_sistema import RelojDelSistema
 
 CAMPOS = ["especie", "lugar", "fecha", "observador"]
 REPETIDO = {"error": "Ya existe un avistamiento con la misma especie, lugar, fecha y observador"}

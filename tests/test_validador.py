@@ -6,7 +6,7 @@ from datetime import timedelta
 import pytest
 
 from tests.dobles import HOY, RelojFijo
-from validador import ValidadorDeAvistamiento
+from avistamientos.entidades.validador import ValidadorDeAvistamiento
 
 VALIDO = {"especie": "Colibrí", "lugar": "Bogotá", "fecha": "2026-10-01", "observador": "Sergio"}
 

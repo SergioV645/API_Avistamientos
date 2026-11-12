@@ -1,19 +1,9 @@
-# Regla de negocio del avistamiento, separada del controlador (app.py)
-# para poder probarla sin levantar la API ni tocar la base de datos.
+# Entidad: la regla de negocio del avistamiento (capa de entidades).
+# No conoce Flask, ni SQLite, ni el reloj del sistema: recibe un Reloj
+# (abstracción definida en esta misma capa) por el constructor.
 from datetime import date
 
-
-class RelojDelSistema:
-    """Reloj real: devuelve la fecha de hoy según el sistema.
-
-    El validador no llama a date.today() directamente, sino a un reloj que
-    recibe por el constructor. Así, en las pruebas se puede reemplazar por un
-    reloj fijo (un stub) y la prueba de "fecha de mañana" no depende del día
-    en que se corra.
-    """
-
-    def hoy(self):
-        return date.today()
+from avistamientos.entidades.reloj import Reloj
 
 
 class ValidadorDeAvistamiento:
@@ -26,7 +16,7 @@ class ValidadorDeAvistamiento:
     LONGITUD_MINIMA_ESPECIE = 3
     LONGITUD_MAXIMA_ESPECIE = 50
 
-    def __init__(self, reloj):
+    def __init__(self, reloj: Reloj):
         self.reloj = reloj
 
     def validar(self, datos):
