@@ -1,18 +1,21 @@
 from flask import Flask, jsonify, request
 
 from avistamientos.adaptadores.repositorio_sqlite import RepositorioSqliteDeAvistamientos
-from avistamientos.casos_de_uso.errores import AvistamientoRepetido
+from avistamientos.casos_de_uso.avistamientos import (
+    ActualizarAvistamiento,
+    ConsultarAvistamiento,
+    EliminarAvistamiento,
+    ListarAvistamientos,
+    RegistrarAvistamiento,
+    ResumirPorEspecie,
+)
+from avistamientos.casos_de_uso.errores import AvistamientoNoEncontrado, AvistamientoRepetido, DatosInvalidos
 from avistamientos.entidades.validador import ValidadorDeAvistamiento
 from avistamientos.frameworks_y_drivers.reloj_del_sistema import RelojDelSistema
 from avistamientos.frameworks_y_drivers.sqlite import abrir_conexion
 
-CAMPOS = ["especie", "lugar", "fecha", "observador"]
 REPETIDO = {"error": "Ya existe un avistamiento con la misma especie, lugar, fecha y observador"}
-
-
-def limpiar(body):
-    """Se queda solo con los 4 campos (ignora un "id" enviado por el cliente)."""
-    return {campo: body[campo].strip() for campo in CAMPOS}
+NO_ENCONTRADO = {"error": "Avistamiento no encontrado"}
 
 
 def crear_app(ruta_db=None, reloj=None):
@@ -23,56 +26,49 @@ def crear_app(ruta_db=None, reloj=None):
     repo = RepositorioSqliteDeAvistamientos(abrir_conexion(ruta_db))
     validador = ValidadorDeAvistamiento(reloj or RelojDelSistema())
 
-    def datos_invalidos(errores):
-        return jsonify({"error": "Datos inválidos", "detalles": errores}), 400
-
     @app.get("/avistamientos")
     def listar():
-        return jsonify(repo.listar()), 200
+        return jsonify(ListarAvistamientos(repo).ejecutar()), 200
 
     @app.get("/avistamientos/resumen")
     def resumen():
-        por_especie = repo.contar_por_especie()
-        total = sum(f["cantidad"] for f in por_especie)
-        return jsonify({"total": total, "porEspecie": por_especie}), 200
+        return jsonify(ResumirPorEspecie(repo).ejecutar()), 200
 
     @app.get("/avistamientos/<int:id>")
     def ver(id):
-        avistamiento = repo.buscar_por_id(id)
-        if avistamiento is None:
-            return jsonify({"error": "Avistamiento no encontrado"}), 404
-        return jsonify(avistamiento), 200
+        try:
+            return jsonify(ConsultarAvistamiento(repo).ejecutar(id)), 200
+        except AvistamientoNoEncontrado:
+            return jsonify(NO_ENCONTRADO), 404
 
     @app.post("/avistamientos")
     def crear():
-        body = request.get_json(silent=True)
-        errores = validador.validar(body)
-        if errores:
-            return datos_invalidos(errores)
         try:
-            creado = repo.agregar(limpiar(body))
-        except AvistamientoRepetido:  # la base rechazó el duplicado
+            creado = RegistrarAvistamiento(repo, validador).ejecutar(request.get_json(silent=True))
+        except DatosInvalidos as e:
+            return jsonify({"error": "Datos inválidos", "detalles": e.errores}), 400
+        except AvistamientoRepetido:
             return jsonify(REPETIDO), 409
         return jsonify(creado), 201, {"Location": f"/avistamientos/{creado['id']}"}
 
     @app.put("/avistamientos/<int:id>")
     def actualizar(id):
-        if repo.buscar_por_id(id) is None:
-            return jsonify({"error": "Avistamiento no encontrado"}), 404
-        body = request.get_json(silent=True)
-        errores = validador.validar(body)
-        if errores:
-            return datos_invalidos(errores)
         try:
-            actualizado = repo.actualizar(id, limpiar(body))
-        except AvistamientoRepetido:  # quedaría igual a otro avistamiento
+            actualizado = ActualizarAvistamiento(repo, validador).ejecutar(id, request.get_json(silent=True))
+        except AvistamientoNoEncontrado:
+            return jsonify(NO_ENCONTRADO), 404
+        except DatosInvalidos as e:
+            return jsonify({"error": "Datos inválidos", "detalles": e.errores}), 400
+        except AvistamientoRepetido:
             return jsonify(REPETIDO), 409
         return jsonify(actualizado), 200
 
     @app.delete("/avistamientos/<int:id>")
     def eliminar(id):
-        if not repo.eliminar(id):
-            return jsonify({"error": "Avistamiento no encontrado"}), 404
+        try:
+            EliminarAvistamiento(repo).ejecutar(id)
+        except AvistamientoNoEncontrado:
+            return jsonify(NO_ENCONTRADO), 404
         return "", 204
 
     @app.errorhandler(404)
